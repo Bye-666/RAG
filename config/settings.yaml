@@ -1,0 +1,25 @@
+# RAG-MCP-SERVER 配置文件
+# 快速原型阶段 - 基础结构
+
+# LLM 配置
+llm:
+  provider: ""
+  model: ""
+  api_key: ""
+
+# Embedding 配置
+embedding:
+  provider: ""
+  model: ""
+  api_key: ""
+
+# 向量数据库配置
+vector_store:
+  type: "milvus"
+  uri: "data/db/milvus.db"
+  collection_name: "rag_collection"
+
+# 日志配置
+logging:
+  level: "INFO"
+  trace_file: "logs/traces.jsonl"

@@ -1,0 +1,40 @@
+{
+  "project": "RAG-MCP-SERVER",
+  "version": "1.0",
+  "last_updated": "2026-07-03",
+  "total_tasks": 68,
+  "completed_count": 1,
+  "current_phase": "A",
+  "current_task": "A2",
+  "completed_tasks": [
+    {
+      "id": "A1",
+      "name": "初始化目录树",
+      "phase": "A",
+      "completed_at": "2026-07-03",
+      "files_created": [
+        "src/__init__.py",
+        "config/settings.yaml",
+        "data/documents/",
+        "data/images/",
+        "data/db/",
+        "logs/"
+      ],
+      "verification_status": "passed"
+    }
+  ],
+  "next_tasks": [
+    {
+      "id": "A2",
+      "name": "pytest 测试框架",
+      "phase": "A",
+      "dependencies": ["A1"]
+    },
+    {
+      "id": "A3",
+      "name": "配置加载 Settings",
+      "phase": "A",
+      "dependencies": ["A1"]
+    }
+  ]
+}
