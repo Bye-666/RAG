@@ -1,4 +1,4 @@
-# RAG-MCP-SERVER
+# BYE-RAG
 
 > 企业级 RAG 系统 + MCP 协议集成 | Production-Ready
 
@@ -35,8 +35,8 @@
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/your-org/RAG-MCP-SERVER.git
-cd RAG-MCP-SERVER
+git clone https://github.com/your-org/BYE-RAG.git
+cd BYE-RAG
 ```
 
 ### 2. 安装依赖
