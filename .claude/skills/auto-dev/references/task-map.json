@@ -1,0 +1,122 @@
+{
+  "project": "RAG-MCP-SERVER",
+  "version": "1.0",
+  "total_tasks": 68,
+  "phases": {
+    "A": {
+      "name": "工程骨架与测试基座",
+      "description": "建立可运行、可配置、可测试的工程骨架",
+      "task_count": 3
+    },
+    "B": {
+      "name": "Libs 可插拔层",
+      "description": "Factory + Base 接口 + 默认实现",
+      "task_count": 16
+    },
+    "C": {
+      "name": "Ingestion Pipeline MVP",
+      "description": "PDF→Chunk→Embedding→Upsert",
+      "task_count": 15
+    },
+    "D": {
+      "name": "Retrieval MVP",
+      "description": "Dense + Sparse + RRF + Rerank",
+      "task_count": 7
+    },
+    "E": {
+      "name": "MCP Server 层",
+      "description": "按 MCP 标准暴露 tools",
+      "task_count": 6
+    },
+    "F": {
+      "name": "Trace 基础设施",
+      "description": "双链路追踪",
+      "task_count": 5
+    },
+    "G": {
+      "name": "Dashboard",
+      "description": "Streamlit 可视化管理",
+      "task_count": 6
+    },
+    "H": {
+      "name": "评估体系",
+      "description": "Ragas + Golden test set",
+      "task_count": 5
+    },
+    "I": {
+      "name": "端到端验收",
+      "description": "完整测试与文档",
+      "task_count": 5
+    }
+  },
+  "tasks": {
+    "A1": {"name": "初始化目录树", "phase": "A", "order": 1, "dependencies": []},
+    "A2": {"name": "pytest 测试框架", "phase": "A", "order": 2, "dependencies": ["A1"]},
+    "A3": {"name": "配置加载 Settings", "phase": "A", "order": 3, "dependencies": ["A1"]},
+    "B1": {"name": "BaseLLM", "phase": "B", "order": 4, "dependencies": ["A3"]},
+    "B2": {"name": "DashScopeLLM", "phase": "B", "order": 5, "dependencies": ["B1"]},
+    "B3": {"name": "BaseEmbedding", "phase": "B", "order": 6, "dependencies": ["A3"]},
+    "B4": {"name": "DashScopeEmbedding", "phase": "B", "order": 7, "dependencies": ["B3"]},
+    "B5": {"name": "BaseVisionLLM", "phase": "B", "order": 8, "dependencies": ["A3"]},
+    "B6": {"name": "DashScopeVision", "phase": "B", "order": 9, "dependencies": ["B5"]},
+    "B7": {"name": "BaseSplitter", "phase": "B", "order": 10, "dependencies": ["A3"]},
+    "B8": {"name": "RecursiveSplitter", "phase": "B", "order": 11, "dependencies": ["B7"]},
+    "B9": {"name": "BaseVectorStore", "phase": "B", "order": 12, "dependencies": ["A3"]},
+    "B10": {"name": "MilvusStore", "phase": "B", "order": 13, "dependencies": ["B9"], "spec": "3.1.1"},
+    "B11": {"name": "BaseReranker", "phase": "B", "order": 14, "dependencies": ["A3"]},
+    "B12": {"name": "CrossEncoderReranker", "phase": "B", "order": 15, "dependencies": ["B11"]},
+    "B13": {"name": "BaseEvaluator", "phase": "B", "order": 16, "dependencies": ["A3"]},
+    "B14": {"name": "Factory 模式", "phase": "B", "order": 17, "dependencies": ["B2","B4","B10"]},
+    "B15": {"name": "配置驱动实例化", "phase": "B", "order": 18, "dependencies": ["B14"]},
+    "B16": {"name": "Libs 集成测试", "phase": "B", "order": 19, "dependencies": ["B15"]},
+    "C1": {"name": "数据类型定义", "phase": "C", "order": 20, "dependencies": ["B16"]},
+    "C2": {"name": "FileIntegrityChecker", "phase": "C", "order": 21, "dependencies": ["C1"]},
+    "C3": {"name": "BaseLoader", "phase": "C", "order": 22, "dependencies": ["C1"]},
+    "C4": {"name": "PDFLoader", "phase": "C", "order": 23, "dependencies": ["C3"]},
+    "C5": {"name": "ChunkRefiner", "phase": "C", "order": 24, "dependencies": ["C1","B2"]},
+    "C6": {"name": "MetadataEnricher", "phase": "C", "order": 25, "dependencies": ["C1","B2"]},
+    "C7": {"name": "ImageCaptioner", "phase": "C", "order": 26, "dependencies": ["C1","B6"]},
+    "C8": {"name": "DenseEncoder", "phase": "C", "order": 27, "dependencies": ["B4"]},
+    "C9": {"name": "SparseEncoder (BM25)", "phase": "C", "order": 28, "dependencies": [], "spec": "3.1.1"},
+    "C10": {"name": "BatchProcessor", "phase": "C", "order": 29, "dependencies": ["C8","C9"]},
+    "C11": {"name": "VectorUpserter", "phase": "C", "order": 30, "dependencies": ["B10"]},
+    "C12": {"name": "ImageStorage", "phase": "C", "order": 31, "dependencies": []},
+    "C13": {"name": "Pipeline 编排", "phase": "C", "order": 32, "dependencies": ["C4","C10","C11"]},
+    "C14": {"name": "ingest.py 脚本", "phase": "C", "order": 33, "dependencies": ["C13"]},
+    "C15": {"name": "Ingestion E2E", "phase": "C", "order": 34, "dependencies": ["C14"]},
+    "D1": {"name": "QueryProcessor", "phase": "D", "order": 35, "dependencies": ["C15"]},
+    "D2": {"name": "DenseRetriever", "phase": "D", "order": 36, "dependencies": ["D1","B10"]},
+    "D3": {"name": "SparseRetriever", "phase": "D", "order": 37, "dependencies": ["D1","B10"]},
+    "D4": {"name": "RRF Fusion", "phase": "D", "order": 38, "dependencies": [], "spec": "3.1.2"},
+    "D5": {"name": "HybridSearch", "phase": "D", "order": 39, "dependencies": ["D2","D3","D4"], "spec": "3.1.2"},
+    "D6": {"name": "Reranker", "phase": "D", "order": 40, "dependencies": ["D5","B12"]},
+    "D7": {"name": "query.py 脚本", "phase": "D", "order": 41, "dependencies": ["D6"]},
+    "E1": {"name": "MCP Server 入口", "phase": "E", "order": 42, "dependencies": ["D7"]},
+    "E2": {"name": "Protocol Handler", "phase": "E", "order": 43, "dependencies": ["E1"]},
+    "E3": {"name": "query_knowledge_hub", "phase": "E", "order": 44, "dependencies": ["E2","D6"]},
+    "E4": {"name": "list_collections", "phase": "E", "order": 45, "dependencies": ["E2"]},
+    "E5": {"name": "get_document_summary", "phase": "E", "order": 46, "dependencies": ["E2"]},
+    "E6": {"name": "MCP Server E2E", "phase": "E", "order": 47, "dependencies": ["E5"]},
+    "F1": {"name": "TraceContext", "phase": "F", "order": 48, "dependencies": ["E6"]},
+    "F2": {"name": "结构化 Logger", "phase": "F", "order": 49, "dependencies": ["F1"]},
+    "F3": {"name": "Ingestion 打点", "phase": "F", "order": 50, "dependencies": ["F2","C13"]},
+    "F4": {"name": "Query 打点", "phase": "F", "order": 51, "dependencies": ["F2","D6"]},
+    "F5": {"name": "Trace 持久化", "phase": "F", "order": 52, "dependencies": ["F4"]},
+    "G1": {"name": "Dashboard 架构", "phase": "G", "order": 53, "dependencies": ["F5"]},
+    "G2": {"name": "数据浏览器", "phase": "G", "order": 54, "dependencies": ["G1"]},
+    "G3": {"name": "Ingestion 管理", "phase": "G", "order": 55, "dependencies": ["G1"]},
+    "G4": {"name": "Ingestion 追踪", "phase": "G", "order": 56, "dependencies": ["G1","F5"]},
+    "G5": {"name": "Query 追踪", "phase": "G", "order": 57, "dependencies": ["G1","F5"]},
+    "G6": {"name": "Dashboard 脚本", "phase": "G", "order": 58, "dependencies": ["G5"]},
+    "H1": {"name": "RagasEvaluator", "phase": "H", "order": 59, "dependencies": ["B13","D7"]},
+    "H2": {"name": "CompositeEvaluator", "phase": "H", "order": 60, "dependencies": ["H1"]},
+    "H3": {"name": "Golden Test Set", "phase": "H", "order": 61, "dependencies": []},
+    "H4": {"name": "评估面板", "phase": "H", "order": 62, "dependencies": ["H2","H3","G1"]},
+    "H5": {"name": "evaluate.py 脚本", "phase": "H", "order": 63, "dependencies": ["H4"]},
+    "I1": {"name": "MCP Client 测试", "phase": "I", "order": 64, "dependencies": ["E6"]},
+    "I2": {"name": "Dashboard 冒烟测试", "phase": "I", "order": 65, "dependencies": ["G6"]},
+    "I3": {"name": "完善 README", "phase": "I", "order": 66, "dependencies": ["I2"]},
+    "I4": {"name": "接口契约测试", "phase": "I", "order": 67, "dependencies": ["I1"]},
+    "I5": {"name": "全链路 E2E", "phase": "I", "order": 68, "dependencies": ["I4"]}
+  }
+}

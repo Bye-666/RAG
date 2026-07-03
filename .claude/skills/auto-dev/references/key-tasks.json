@@ -1,0 +1,280 @@
+{
+  "description": "关键任务详细信息补充文件",
+  "usage": "执行任务时优先查找此文件，如果存在则使用详细信息，否则使用 task-map.json 基础信息",
+  "tasks": {
+    "A1": {
+      "name": "初始化目录树",
+      "description": "创建项目基本目录结构和空的入口文件",
+      "src_files": [
+        "src/__init__.py",
+        "config/settings.yaml",
+        "data/",
+        "logs/"
+      ],
+      "estimated_lines": 20,
+      "spec_section": "4.2",
+      "success_criteria": [
+        "目录结构符合 file-structure.md 规范",
+        "src/__init__.py 存在且可导入",
+        "config/settings.yaml 是合法的 YAML"
+      ],
+      "notes": "最简实现，只创建目录和空文件"
+    },
+    "B1": {
+      "name": "BaseLLM 抽象接口",
+      "description": "定义 LLM 的抽象基类，所有 LLM 实现都继承此类",
+      "src_files": ["src/libs/llm/base.py"],
+      "test_files": [],
+      "estimated_lines": 50,
+      "spec_section": "3.3",
+      "success_criteria": [
+        "定义 BaseLLM 抽象类",
+        "包含核心方法：generate(), generate_stream()",
+        "定义输入输出类型"
+      ],
+      "key_methods": ["generate", "generate_stream"],
+      "notes": "使用 ABC 抽象基类，定义接口规范"
+    },
+    "B9": {
+      "name": "BaseVectorStore 抽象接口",
+      "description": "定义向量存储的抽象基类",
+      "src_files": ["src/libs/vector_store/base.py"],
+      "test_files": [],
+      "estimated_lines": 60,
+      "spec_section": "3.3",
+      "success_criteria": [
+        "定义 BaseVectorStore 抽象类",
+        "包含方法：upsert, search_dense, search_sparse, get_by_ids, delete"
+      ],
+      "key_methods": ["upsert", "search_dense", "search_sparse", "get_by_ids", "delete"],
+      "notes": "为 B10 (MilvusStore) 做准备"
+    },
+    "B10": {
+      "name": "MilvusStore 实现",
+      "description": "基于 Milvus Lite 的向量存储，支持双向量（Dense + Sparse）混合检索",
+      "src_files": ["src/libs/vector_store/milvus_store.py"],
+      "test_files": ["tests/unit/libs/vector_store/test_milvus_store.py"],
+      "estimated_lines": 180,
+      "spec_section": "3.1.1",
+      "has_complete_code": true,
+      "success_criteria": [
+        "继承 BaseVectorStore",
+        "能创建 Collection（Schema + 双索引）",
+        "能插入双向量记录",
+        "Dense 和 Sparse 检索都能返回结果",
+        "单元测试覆盖核心方法"
+      ],
+      "key_methods": [
+        "__init__",
+        "_ensure_collection",
+        "upsert",
+        "search_dense",
+        "search_sparse",
+        "get_by_ids",
+        "delete",
+        "count"
+      ],
+      "dependencies_detail": {
+        "external": ["pymilvus>=2.4.0"],
+        "internal": ["BaseVectorStore"]
+      },
+      "implementation_notes": [
+        "参考 TECH_SPEC.md 3.1.1 节的完整代码",
+        "使用 Milvus Lite（本地文件模式）",
+        "Collection Schema: id, text, dense_vector(2048), sparse_vector, metadata(dynamic)",
+        "索引：Dense(AUTOINDEX+COSINE), Sparse(SPARSE_INVERTED_INDEX+IP)"
+      ]
+    },
+    "C1": {
+      "name": "核心数据类型定义",
+      "description": "定义 Ingestion Pipeline 的核心数据结构",
+      "src_files": ["src/ingestion/types.py"],
+      "test_files": [],
+      "estimated_lines": 80,
+      "spec_section": "3.1.1",
+      "success_criteria": [
+        "定义 Document 数据类",
+        "定义 Chunk 数据类",
+        "定义 ChunkRecord 数据类",
+        "使用 dataclass 或 Pydantic"
+      ],
+      "key_types": ["Document", "Chunk", "ChunkRecord"],
+      "notes": "使用 Python dataclass，简洁清晰"
+    },
+    "C9": {
+      "name": "SparseEncoder (BM25)",
+      "description": "BM25 稀疏向量编码器，生成 Milvus 兼容的稀疏向量格式",
+      "src_files": ["src/ingestion/embedders/sparse_encoder.py"],
+      "test_files": ["tests/unit/ingestion/embedders/test_sparse_encoder.py"],
+      "estimated_lines": 200,
+      "spec_section": "3.1.1",
+      "has_complete_code": true,
+      "success_criteria": [
+        "实现 BM25SparseEncoder 类",
+        "fit() 方法构建词表和 IDF",
+        "encode() 方法生成稀疏向量",
+        "save/load 支持持久化",
+        "输出格式：{\"indices\": [...], \"values\": [...]}"
+      ],
+      "key_methods": ["__init__", "fit", "encode", "save", "load", "_tokenize"],
+      "dependencies_detail": {
+        "external": [],
+        "internal": []
+      },
+      "implementation_notes": [
+        "参考 TECH_SPEC.md 3.1.1 节的完整代码",
+        "k1=1.5, b=0.75（BM25 参数）",
+        "快速原型：简单空格分词",
+        "生产环境：使用 jieba 分词",
+        "词表持久化到 data/db/bm25_encoder.pkl"
+      ]
+    },
+    "D1": {
+      "name": "QueryProcessor",
+      "description": "查询预处理，提取关键词和元数据过滤条件",
+      "src_files": ["src/core/query_engine/query_processor.py"],
+      "test_files": ["tests/unit/core/query_engine/test_query_processor.py"],
+      "estimated_lines": 120,
+      "spec_section": "3.1.2",
+      "success_criteria": [
+        "提取查询关键词",
+        "解析元数据过滤条件",
+        "查询扩展（可选）"
+      ],
+      "notes": "简单实现即可，不要过度工程"
+    },
+    "D4": {
+      "name": "RRF Fusion",
+      "description": "Reciprocal Rank Fusion 算法，融合 Dense 和 Sparse 检索结果",
+      "src_files": ["src/core/query_engine/rrf_fusion.py"],
+      "test_files": ["tests/unit/core/query_engine/test_rrf_fusion.py"],
+      "estimated_lines": 80,
+      "spec_section": "3.1.2",
+      "has_complete_code": true,
+      "success_criteria": [
+        "实现 rrf_fusion 函数",
+        "接受两路检索结果",
+        "返回融合后的 Top-K",
+        "RRF 参数 k=60"
+      ],
+      "key_functions": ["rrf_fusion"],
+      "dependencies_detail": {
+        "external": [],
+        "internal": []
+      },
+      "implementation_notes": [
+        "参考 TECH_SPEC.md 3.1.2 节的完整代码",
+        "RRF 公式：score = 1/(k + rank)",
+        "k=60 是常用值",
+        "需要处理同一文档在两路结果中都出现的情况"
+      ]
+    },
+    "D5": {
+      "name": "HybridSearch",
+      "description": "混合检索引擎，编排 Dense + Sparse + RRF 全流程",
+      "src_files": ["src/core/query_engine/hybrid_search.py"],
+      "test_files": ["tests/integration/core/query_engine/test_hybrid_search.py"],
+      "estimated_lines": 120,
+      "spec_section": "3.1.2",
+      "has_complete_code": true,
+      "success_criteria": [
+        "实现 HybridSearch 类",
+        "整合 DenseRetriever + SparseRetriever + RRF",
+        "支持元数据过滤",
+        "扩大召回（两路各取 top_k*2）"
+      ],
+      "key_methods": ["__init__", "search"],
+      "dependencies_detail": {
+        "external": [],
+        "internal": ["DenseRetriever", "SparseRetriever", "rrf_fusion"]
+      },
+      "implementation_notes": [
+        "参考 TECH_SPEC.md 3.1.2 节的完整代码",
+        "先并行执行两路检索",
+        "然后用 RRF 融合",
+        "返回 Top-K 结果"
+      ]
+    },
+    "E1": {
+      "name": "MCP Server 入口",
+      "description": "MCP Server 主入口，处理 Stdio 通信",
+      "src_files": ["src/mcp_server/server.py"],
+      "test_files": [],
+      "estimated_lines": 100,
+      "spec_section": "3.2",
+      "success_criteria": [
+        "使用 MCP SDK 创建 Server",
+        "配置 Stdio Transport",
+        "注册 Tools",
+        "处理协议消息"
+      ],
+      "notes": "使用官方 MCP Python SDK"
+    },
+    "F1": {
+      "name": "TraceContext",
+      "description": "追踪上下文管理器，记录执行过程",
+      "src_files": ["src/observability/trace/trace_context.py"],
+      "test_files": ["tests/unit/observability/trace/test_trace_context.py"],
+      "estimated_lines": 100,
+      "spec_section": "3.4",
+      "success_criteria": [
+        "实现 TraceContext 类",
+        "记录阶段时间",
+        "收集中间状态",
+        "支持嵌套追踪"
+      ],
+      "notes": "使用 context manager 模式"
+    },
+    "G1": {
+      "name": "Dashboard 架构",
+      "description": "Streamlit Dashboard 基础架构和系统总览页",
+      "src_files": [
+        "src/observability/dashboard/app.py",
+        "src/observability/dashboard/pages/overview.py"
+      ],
+      "test_files": [],
+      "estimated_lines": 150,
+      "spec_section": "3.4",
+      "success_criteria": [
+        "Streamlit 多页面应用结构",
+        "系统总览页显示配置和统计",
+        "导航菜单可用"
+      ],
+      "notes": "使用 Streamlit 的 pages 功能"
+    },
+    "H1": {
+      "name": "RagasEvaluator",
+      "description": "集成 Ragas 评估框架",
+      "src_files": ["src/libs/evaluator/ragas_evaluator.py"],
+      "test_files": ["tests/unit/libs/evaluator/test_ragas_evaluator.py"],
+      "estimated_lines": 140,
+      "spec_section": "5.3",
+      "success_criteria": [
+        "继承 BaseEvaluator",
+        "集成 Ragas 库",
+        "支持 Faithfulness, Answer Relevancy 等指标",
+        "返回评估结果"
+      ],
+      "dependencies_detail": {
+        "external": ["ragas"],
+        "internal": ["BaseEvaluator"]
+      },
+      "notes": "参考 Ragas 官方文档"
+    },
+    "I1": {
+      "name": "MCP Client 测试",
+      "description": "模拟 MCP Client 调用，验证 Server 功能",
+      "src_files": [],
+      "test_files": ["tests/e2e/test_mcp_client.py"],
+      "estimated_lines": 130,
+      "spec_section": "3.2",
+      "success_criteria": [
+        "能启动 MCP Server",
+        "能调用 query_knowledge_hub",
+        "能调用 list_collections",
+        "返回结果正确"
+      ],
+      "notes": "使用 MCP Client SDK 或手动构造 JSON-RPC 消息"
+    }
+  }
+}
