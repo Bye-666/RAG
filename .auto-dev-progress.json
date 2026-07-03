@@ -3,9 +3,9 @@
   "version": "1.0",
   "last_updated": "2026-07-03",
   "total_tasks": 68,
-  "completed_count": 12,
+  "completed_count": 13,
   "current_phase": "B",
-  "current_task": "B10",
+  "current_task": "B11",
   "completed_tasks": [
     {
       "id": "A1",
@@ -165,6 +165,20 @@
       ],
       "verification_status": "passed",
       "notes": "使用 ABC 定义抽象接口，包含 upsert/search_dense/search_sparse/get_by_ids/delete/count 方法"
+    },
+    {
+      "id": "B10",
+      "name": "MilvusStore",
+      "phase": "B",
+      "completed_at": "2026-07-03",
+      "files_created": [
+        "src/libs/vector_store/milvus_store.py",
+        "tests/unit/libs/vector_store/__init__.py",
+        "tests/unit/libs/vector_store/test_milvus_store.py"
+      ],
+      "verification_status": "passed",
+      "tests_passed": "5/5",
+      "notes": "核心任务：基于 Milvus Lite，支持双向量混合检索"
     }
   ],
   "phase_summary": {
@@ -177,16 +191,16 @@
     "B": {
       "name": "Libs 可插拔层",
       "status": "in_progress",
-      "completed_tasks": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9"],
+      "completed_tasks": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10"],
       "total_tasks": 16
     }
   },
   "next_tasks": [
     {
-      "id": "B10",
-      "name": "MilvusStore",
+      "id": "B11",
+      "name": "BaseReranker",
       "phase": "B",
-      "dependencies": ["B9"]
+      "dependencies": ["A3"]
     }
   ]
 }
