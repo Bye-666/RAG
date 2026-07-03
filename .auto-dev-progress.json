@@ -3,9 +3,9 @@
   "version": "1.0",
   "last_updated": "2026-07-03",
   "total_tasks": 68,
-  "completed_count": 20,
+  "completed_count": 21,
   "current_phase": "C",
-  "current_task": "C2",
+  "current_task": "C3",
   "completed_tasks": [
     {
       "id": "A1",
@@ -244,6 +244,17 @@
       ],
       "verification_status": "passed",
       "tests_passed": "6/6"
+    },
+    {
+      "id": "C1",
+      "name": "核心数据类型定义",
+      "phase": "C",
+      "completed_at": "2026-07-03",
+      "files_created": [
+        "src/ingestion/__init__.py",
+        "src/ingestion/types.py"
+      ],
+      "verification_status": "passed"
     }
   ],
   "phase_summary": {
@@ -261,17 +272,17 @@
     },
     "C": {
       "name": "Ingestion Pipeline MVP",
-      "status": "not_started",
-      "completed_tasks": [],
+      "status": "in_progress",
+      "completed_tasks": ["C1"],
       "total_tasks": 15
     }
   },
   "next_tasks": [
     {
-      "id": "C1",
-      "name": "核心数据类型定义",
+      "id": "C2",
+      "name": "FileIntegrityChecker",
       "phase": "C",
-      "dependencies": ["B16"]
+      "dependencies": ["C1"]
     }
   ]
 }
