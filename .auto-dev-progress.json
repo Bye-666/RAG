@@ -3,9 +3,9 @@
   "version": "1.0",
   "last_updated": "2026-07-03",
   "total_tasks": 68,
-  "completed_count": 1,
+  "completed_count": 2,
   "current_phase": "A",
-  "current_task": "A2",
+  "current_task": "A3",
   "completed_tasks": [
     {
       "id": "A1",
@@ -21,15 +21,25 @@
         "logs/"
       ],
       "verification_status": "passed"
-    }
-  ],
-  "next_tasks": [
+    },
     {
       "id": "A2",
       "name": "pytest 测试框架",
       "phase": "A",
-      "dependencies": ["A1"]
-    },
+      "completed_at": "2026-07-03",
+      "files_created": [
+        "pytest.ini",
+        "tests/__init__.py",
+        "tests/test_framework.py",
+        "tests/unit/__init__.py",
+        "tests/integration/__init__.py",
+        "tests/e2e/__init__.py"
+      ],
+      "verification_status": "passed",
+      "tests_passed": "3/3"
+    }
+  ],
+  "next_tasks": [
     {
       "id": "A3",
       "name": "配置加载 Settings",
