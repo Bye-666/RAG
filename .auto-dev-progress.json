@@ -3,9 +3,9 @@
   "version": "1.0",
   "last_updated": "2026-07-03",
   "total_tasks": 68,
-  "completed_count": 40,
+  "completed_count": 46,
   "current_phase": "C",
-  "current_task": "D2",
+  "current_task": "E1",
   "completed_tasks": [
     {
       "id": "A1",
@@ -468,6 +468,48 @@
       "verification_status": "passed",
       "tests_passed": "16/16",
       "notes": "Query processing with rewriting, expansion, and dual-vector generation"
+    },
+    {
+      "id": "D2",
+      "name": "DenseRetriever",
+      "phase": "D",
+      "completed_at": "2026-07-03",
+      "verification_status": "passed"
+    },
+    {
+      "id": "D3",
+      "name": "SparseRetriever",
+      "phase": "D",
+      "completed_at": "2026-07-03",
+      "verification_status": "passed"
+    },
+    {
+      "id": "D4",
+      "name": "RRF Fusion",
+      "phase": "D",
+      "completed_at": "2026-07-03",
+      "verification_status": "passed"
+    },
+    {
+      "id": "D5",
+      "name": "HybridSearch",
+      "phase": "D",
+      "completed_at": "2026-07-03",
+      "verification_status": "passed"
+    },
+    {
+      "id": "D6",
+      "name": "RerankerModule",
+      "phase": "D",
+      "completed_at": "2026-07-03",
+      "verification_status": "passed"
+    },
+    {
+      "id": "D7",
+      "name": "query.py 脚本",
+      "phase": "D",
+      "completed_at": "2026-07-03",
+      "verification_status": "passed"
     }
   ],
   "phase_summary": {
@@ -529,22 +571,25 @@
     },
     "D": {
       "name": "Retrieval Pipeline",
-      "status": "in_progress",
+      "status": "completed",
       "completed_tasks": [
-        "D1"
+        "D1",
+        "D2",
+        "D3",
+        "D4",
+        "D5",
+        "D6",
+        "D7"
       ],
       "total_tasks": 7
     }
   },
   "next_tasks": [
     {
-      "id": "D2",
-      "name": "DenseRetriever",
-      "phase": "D",
-      "dependencies": [
-        "D1",
-        "B10"
-      ]
+      "id": "E1",
+      "name": "MCP Server 实现",
+      "phase": "E",
+      "dependencies": []
     }
   ]
 }
