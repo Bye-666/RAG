@@ -3,9 +3,9 @@
   "version": "1.0",
   "last_updated": "2026-07-03",
   "total_tasks": 68,
-  "completed_count": 39,
+  "completed_count": 40,
   "current_phase": "C",
-  "current_task": "D1",
+  "current_task": "D2",
   "completed_tasks": [
     {
       "id": "A1",
@@ -453,6 +453,21 @@
       "verification_status": "passed",
       "tests_passed": "8/8",
       "notes": "End-to-end integration test for complete ingestion pipeline"
+    },
+    {
+      "id": "D1",
+      "name": "QueryProcessor",
+      "phase": "D",
+      "completed_at": "2026-07-03",
+      "files_created": [
+        "src/retrieval/__init__.py",
+        "src/retrieval/query_processor.py",
+        "tests/unit/retrieval/__init__.py",
+        "tests/unit/retrieval/test_query_processor.py"
+      ],
+      "verification_status": "passed",
+      "tests_passed": "16/16",
+      "notes": "Query processing with rewriting, expansion, and dual-vector generation"
     }
   ],
   "phase_summary": {
@@ -511,14 +526,25 @@
         "C15"
       ],
       "total_tasks": 15
+    },
+    "D": {
+      "name": "Retrieval Pipeline",
+      "status": "in_progress",
+      "completed_tasks": [
+        "D1"
+      ],
+      "total_tasks": 7
     }
   },
   "next_tasks": [
     {
-      "id": "D1",
-      "name": "QueryProcessor",
+      "id": "D2",
+      "name": "DenseRetriever",
       "phase": "D",
-      "dependencies": []
+      "dependencies": [
+        "D1",
+        "B10"
+      ]
     }
   ]
 }
