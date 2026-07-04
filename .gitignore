@@ -215,3 +215,11 @@ credentials.*
 .auto-dev-progress-OLD*.json
 .auto-dev-progress-REAL*.json
 AUDIT_REPORT.md
+
+# Runtime data
+data/ingestion_records.json
+data/traces/
+
+# Temporary diagnostic/test scripts
+scripts/diagnose_*.py
+scripts/test_*.py

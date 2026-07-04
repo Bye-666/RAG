@@ -59,4 +59,36 @@ class TestMilvusStore:
         # MilvusStore 继承自 BaseVectorStore，应该有 __repr__
         assert hasattr(MilvusStore, "__repr__")
 
+    def test_search_sparse_lite_loads_collection_before_search(self):
+        """Milvus Lite sparse search loads the collection before searching."""
+        from src.libs.vector_store.milvus_store import MilvusStore
+
+        store = MilvusStore.__new__(MilvusStore)
+        store.collection_name = "test_collection"
+        store._lite_server = MagicMock()
+
+        collection = MagicMock()
+        collection.search.return_value = [[
+            {"id": "doc1", "distance": -2.0, "entity": {"text": "Vue text"}}
+        ]]
+        store._lite_server.get_collection.return_value = collection
+
+        query_vector = {1: 1.0}
+        results = store.search_sparse(query_vector=query_vector, top_k=3)
+
+        collection.load.assert_called_once()
+        collection.search.assert_called_once_with(
+            query_vectors=[query_vector],
+            top_k=3,
+            metric_type="IP",
+            expr=None,
+            output_fields=["id", "text"],
+            anns_field="sparse_vector"
+        )
+        assert results == [{
+            "id": "doc1",
+            "text": "Vue text",
+            "score": -2.0,
+            "metadata": {}
+        }]
 

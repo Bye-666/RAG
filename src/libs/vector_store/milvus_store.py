@@ -414,6 +414,14 @@ class MilvusStore(BaseVectorStore):
             try:
                 collection = self._lite_server.get_collection(self.collection_name)
 
+                # Keep sparse search consistent with dense search: Milvus Lite
+                # collections can be in "released" state after startup/index
+                # operations, and search requires an explicit load().
+                try:
+                    collection.load()
+                except Exception:
+                    pass  # Already loaded or load is a no-op in this runtime.
+
                 # Milvus Lite 稀疏向量搜索
                 results = collection.search(
                     query_vectors=[query_vector],
