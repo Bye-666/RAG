@@ -8,6 +8,7 @@ project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from src.dashboard.session_init import init_session_state
+from src.trace.trace_context import get_trace_recorder
 
 st.set_page_config(page_title="系统设置", page_icon="⚙️", layout="wide")
 
@@ -113,7 +114,7 @@ with col1:
     st.write("清除所有追踪记录（不影响向量库数据）")
 
     if st.button("🗑️ 清除追踪记录", type="secondary"):
-        st.session_state.trace_recorder.clear()
+        get_trace_recorder().clear()
         st.success("✅ 追踪记录已清除")
         st.rerun()
 

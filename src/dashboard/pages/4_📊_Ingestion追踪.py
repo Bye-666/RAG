@@ -16,6 +16,7 @@ project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from src.dashboard.session_init import init_session_state
+from src.trace.trace_context import get_trace_recorder
 
 st.set_page_config(page_title="Ingestion 追踪", page_icon="📊", layout="wide")
 
@@ -28,7 +29,7 @@ st.markdown("文档摄取流程追踪和性能分析")
 st.markdown("---")
 
 # Get ingestion traces
-ingestion_traces = st.session_state.trace_recorder.get_traces(trace_type="ingestion")
+ingestion_traces = get_trace_recorder().get_traces(trace_type="ingestion")
 
 if ingestion_traces:
     # Summary statistics

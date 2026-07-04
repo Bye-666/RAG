@@ -13,6 +13,7 @@ from src.ingestion.loaders.pdf_loader import PDFLoader
 from src.ingestion.batch_processor import BatchProcessor
 from src.ingestion.storage.vector_upserter import VectorUpserter
 from src.ingestion.embedders.sparse_encoder import BM25SparseEncoder
+from src.trace.trace_context import get_trace_recorder
 
 st.set_page_config(page_title="Ingestion 管理", page_icon="📥", layout="wide")
 
@@ -124,7 +125,7 @@ if uploaded_file is not None:
                     st.metric("上传的数据块", result["chunks_uploaded"])
 
                 # Show trace
-                traces = st.session_state.trace_recorder.get_traces(trace_type="ingestion", limit=1)
+                traces = get_trace_recorder().get_traces(trace_type="ingestion", limit=1)
                 if traces:
                     with st.expander("查看追踪详情"):
                         st.json(traces[0])
@@ -166,7 +167,7 @@ st.markdown("---")
 # Recent ingestions
 st.subheader("📋 最近的摄取记录")
 
-ingestion_traces = st.session_state.trace_recorder.get_traces(trace_type="ingestion", limit=10)
+ingestion_traces = get_trace_recorder().get_traces(trace_type="ingestion", limit=10)
 
 if ingestion_traces:
     for i, trace in enumerate(reversed(ingestion_traces)):

@@ -18,6 +18,7 @@ sys.path.insert(0, str(project_root))
 
 from src.dashboard.session_init import init_session_state
 from src.retrieval.query_processor import QueryProcessor
+from src.trace.trace_context import get_trace_recorder
 from src.retrieval.hybrid_search import HybridSearch
 from src.retrieval.retrievers.dense_retriever import DenseRetriever
 from src.retrieval.retrievers.sparse_retriever import SparseRetriever
@@ -106,7 +107,7 @@ if st.button("🚀 执行查询", type="primary") and query_text:
             st.markdown("---")
             st.subheader("📊 执行追踪")
 
-            traces = st.session_state.trace_recorder.get_traces(trace_type="query", limit=1)
+            traces = get_trace_recorder().get_traces(trace_type="query", limit=1)
             if traces:
                 trace = traces[0]
 
@@ -142,7 +143,7 @@ st.markdown("---")
 # Historical query analysis
 st.subheader("📈 历史查询分析")
 
-query_traces = st.session_state.trace_recorder.get_traces(trace_type="query")
+query_traces = get_trace_recorder().get_traces(trace_type="query")
 
 if query_traces:
     st.write(f"**总查询次数**: {len(query_traces)}")

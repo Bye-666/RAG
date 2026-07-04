@@ -43,7 +43,8 @@ if 'component_loader' not in st.session_state:
         st.session_state.component_loader = None
 
 if 'trace_recorder' not in st.session_state:
-    st.session_state.trace_recorder = get_trace_recorder()
+    # Initialize trace recorder in session state
+    get_trace_recorder()
 
 # Check dependencies
 def check_dependencies():
@@ -100,7 +101,7 @@ with col3:
 
 with col4:
     # Get trace count
-    traces = st.session_state.trace_recorder.get_traces()
+    traces = get_trace_recorder().get_traces()
     st.metric(
         label="追踪记录",
         value=len(traces),
@@ -116,20 +117,20 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.markdown("#### 🔍 查询统计")
-    query_traces = st.session_state.trace_recorder.get_traces(trace_type="query")
+    query_traces = get_trace_recorder().get_traces(trace_type="query")
     st.write(f"总查询次数: **{len(query_traces)}**")
 
     if query_traces:
-        avg_duration = sum(t.duration_ms for t in st.session_state.trace_recorder.traces if t.trace_type == "query" and t.duration_ms) / len(query_traces)
+        avg_duration = sum(t['duration_ms'] for t in query_traces if t.get('duration_ms')) / len(query_traces) if query_traces else 0
         st.write(f"平均耗时: **{avg_duration:.2f} ms**")
 
 with col2:
     st.markdown("#### 📥 摄取统计")
-    ingestion_traces = st.session_state.trace_recorder.get_traces(trace_type="ingestion")
+    ingestion_traces = get_trace_recorder().get_traces(trace_type="ingestion")
     st.write(f"总摄取次数: **{len(ingestion_traces)}**")
 
     if ingestion_traces:
-        successful = sum(1 for t in st.session_state.trace_recorder.traces if t.trace_type == "ingestion" and t.error is None)
+        successful = sum(1 for t in ingestion_traces if t.get('error') is None)
         st.write(f"成功率: **{successful/len(ingestion_traces)*100:.1f}%**")
 
 st.markdown("---")

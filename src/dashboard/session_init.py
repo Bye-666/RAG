@@ -30,7 +30,9 @@ def init_session_state():
             st.warning(f"组件加载器初始化失败: {str(e)}")
             st.session_state.component_loader = None
 
-    # Trace Recorder
+    # Trace Recorder - now handled automatically by get_trace_recorder()
+    # The recorder will be stored in session_state when first accessed
     if 'trace_recorder' not in st.session_state:
         from src.trace.trace_context import get_trace_recorder
-        st.session_state.trace_recorder = get_trace_recorder()
+        # Initialize by calling get_trace_recorder() which handles session_state
+        get_trace_recorder()

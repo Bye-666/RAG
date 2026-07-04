@@ -11,6 +11,7 @@ sys.path.insert(0, str(project_root))
 
 from src.dashboard.session_init import init_session_state
 from src.evaluation import EvalRunner, CompositeEvaluator, RagasEvaluator
+from src.trace.trace_context import get_trace_recorder
 
 st.set_page_config(page_title="评估面板", page_icon="📝", layout="wide")
 
@@ -49,11 +50,11 @@ with col1:
         st.warning("⚠️ Ragas 降级模式")
 
 with col2:
-    query_traces = st.session_state.trace_recorder.get_traces(trace_type="query")
+    query_traces = get_trace_recorder().get_traces(trace_type="query")
     st.metric("总查询次数", len(query_traces))
 
 with col3:
-    ingestion_traces = st.session_state.trace_recorder.get_traces(trace_type="ingestion")
+    ingestion_traces = get_trace_recorder().get_traces(trace_type="ingestion")
     if ingestion_traces:
         success = sum(1 for t in ingestion_traces if t.get('error') is None)
         success_rate = success / len(ingestion_traces) * 100
