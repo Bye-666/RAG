@@ -122,16 +122,16 @@ class DashScopeEmbedding(BaseEmbedding):
     def encode_batch(
         self,
         texts: List[str],
-        batch_size: int = 20,
+        batch_size: int = 10,
         **kwargs: Any
     ) -> List[List[float]]:
         """批量编码文本为向量
 
-        DashScope API 限制每次最多 20 个文本，自动分批处理。
+        DashScope API 限制每次最多 10 个文本，自动分批处理。
 
         Args:
             texts: 输入文本列表
-            batch_size: 每批处理的文本数量，默认 20（DashScope 限制）
+            batch_size: 每批处理的文本数量，默认 10（DashScope 限制）
             **kwargs: 其他编码参数
 
         Returns:
@@ -145,8 +145,8 @@ class DashScopeEmbedding(BaseEmbedding):
         # 合并参数
         embedding_kwargs = {**self.kwargs, **kwargs}
 
-        # 限制批量大小不超过 20
-        max_batch_size = min(batch_size, 20)
+        # 限制批量大小不超过 10
+        max_batch_size = min(batch_size, 10)
 
         # 分批处理
         all_embeddings = []
