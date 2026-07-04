@@ -105,17 +105,28 @@ class BM25SparseEncoder:
 
     def _tokenize(self, text: str) -> List[str]:
         """Tokenize text into terms.
-        
-        Simple whitespace splitting for prototype.
-        Production should use jieba or other professional tokenizers.
-        
+
+        Uses jieba for Chinese text segmentation.
+        Falls back to whitespace splitting for non-Chinese text.
+
         Args:
             text: Text to tokenize
-            
+
         Returns:
             List of terms
         """
-        return text.lower().split()
+        # 尝试使用 jieba 进行中文分词
+        try:
+            import jieba
+            # jieba 分词，返回词语列表
+            terms = list(jieba.cut(text.lower()))
+            # 过滤空字符串和单字符（保留多字词）
+            terms = [term.strip() for term in terms if term.strip() and len(term.strip()) > 1]
+            return terms
+        except ImportError:
+            # jieba 未安装，使用空格分词
+            print("[WARNING] jieba not installed, using whitespace tokenization. Install with: pip install jieba")
+            return text.lower().split()
 
     def save(self, path: str | Path):
         """Persist vocabulary and IDF to disk.
