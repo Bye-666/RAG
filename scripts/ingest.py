@@ -166,6 +166,22 @@ Examples:
         if sparse_encoder_path.exists():
             print(f"Loading BM25 encoder from {sparse_encoder_path}")
             sparse_encoder = BM25SparseEncoder.load(sparse_encoder_path)
+
+            # Incrementally update with new documents
+            print("Updating BM25 encoder with new documents...")
+            all_texts = []
+            for file_path in files:
+                try:
+                    doc = loader.load(file_path)
+                    chunks = splitter.split(doc.text)
+                    all_texts.extend(chunks)
+                except Exception as e:
+                    print(f"Warning: Could not load {file_path} for BM25 update: {e}")
+
+            if all_texts:
+                sparse_encoder.partial_fit(all_texts)
+                print(f"[OK] BM25 encoder updated with {len(all_texts)} text chunks")
+                print(f"    Vocabulary size: {len(sparse_encoder.vocab)}, Total documents: {sparse_encoder.doc_count}")
         else:
             print("BM25 encoder not found, training on documents...")
             sparse_encoder = BM25SparseEncoder()
