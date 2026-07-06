@@ -410,8 +410,8 @@ class MCPServer:
 
             # Sample query to get documents (limitation: we can't list all without querying)
             # Alternative: maintain a separate document registry
-            collection_name = self.config.get("milvus.collection_name", "rag_collection")
-            dense_dim = self.config.get("milvus.dense_dim", 2048)
+            collection_name = self.config.get("vector_store.collection_name", "rag_collection")
+            dense_dim = self.config.get("vector_store.dense_dim", 2048)
 
             sample_results = self.vector_store.query(
                 collection_name=collection_name,
@@ -536,7 +536,7 @@ class MCPServer:
             # For now, return the main collection info
 
             stats = self.vector_store.get_collection_stats()
-            collection_name = self.config.get("milvus.collection_name", "rag_collection")
+            collection_name = self.config.get("vector_store.collection_name", "rag_collection")
 
             collections = [
                 {
@@ -577,8 +577,8 @@ class MCPServer:
         try:
             # Query vector store for chunks belonging to this document
             # Use metadata filtering to get chunks with matching doc_id
-            collection_name = self.config.get("milvus.collection_name", "rag_collection")
-            dense_dim = self.config.get("milvus.dense_dim", 2048)
+            collection_name = self.config.get("vector_store.collection_name", "rag_collection")
+            dense_dim = self.config.get("vector_store.dense_dim", 2048)
 
             query_results = self.vector_store.query(
                 collection_name=collection_name,
